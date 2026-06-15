@@ -5,7 +5,19 @@ export const authClient = createAuthClient({
   baseURL: process.client ? window.location.origin : "http://localhost:3000",
   plugins: [
     magicLinkClient(),
-    organizationClient()
+    organizationClient({
+      schema: {
+        organization: {
+          additionalFields: {
+            verified: {
+              type: "boolean",
+              defaultValue: false,
+              required: false,
+            },
+          },
+        },
+      },
+    })
   ]
 });
 

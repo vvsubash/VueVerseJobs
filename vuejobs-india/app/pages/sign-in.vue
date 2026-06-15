@@ -28,6 +28,26 @@
       <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
         <div class="space-y-4 rounded-md shadow-sm">
           <div v-if="isSignUp">
+            <!-- Role Toggle -->
+            <div class="flex rounded-xl bg-slate-100 p-1 mb-4">
+              <button
+                type="button"
+                @click="signUpRole = 'developer'"
+                :class="signUpRole === 'developer' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+                class="w-1/2 rounded-lg py-2 text-center text-sm font-semibold transition"
+              >
+                Developer
+              </button>
+              <button
+                type="button"
+                @click="signUpRole = 'recruiter'"
+                :class="signUpRole === 'recruiter' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+                class="w-1/2 rounded-lg py-2 text-center text-sm font-semibold transition"
+              >
+                Employer / Company
+              </button>
+            </div>
+
             <label for="name" class="sr-only">Full Name</label>
             <input
               id="name"
@@ -101,6 +121,7 @@ import { authClient } from "~/utils/auth-client";
 
 const isSignUp = ref(false);
 const useMagicLink = ref(false);
+const signUpRole = ref("developer");
 const loading = ref(false);
 const error = ref("");
 const successMessage = ref("");
@@ -111,9 +132,16 @@ const form = reactive({
   password: ""
 });
 
+const isPublicDomain = (email: string) => {
+  const publicDomains = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "live.com", "aol.com", "icloud.com"];
+  const domain = email.split("@")[1]?.toLowerCase();
+  return publicDomains.includes(domain);
+};
+
 const toggleMode = () => {
   isSignUp.value = !isSignUp.value;
   useMagicLink.value = false;
+  signUpRole.value = "developer";
   error.value = "";
   successMessage.value = "";
 };
@@ -131,10 +159,17 @@ const handleSubmit = async () => {
 
   try {
     if (isSignUp.value) {
+      if (signUpRole.value === "recruiter" && isPublicDomain(form.email)) {
+        loading.value = false;
+        error.value = "Employers must sign up using their official company email address (personal email domains are not allowed).";
+        return;
+      }
+
       await authClient.signUp.email({
         email: form.email,
         password: form.password,
         name: form.name,
+        role: signUpRole.value,
         callbackURL: "/"
       }, {
         onRequest: () => {
