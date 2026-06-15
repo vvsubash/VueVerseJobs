@@ -4,15 +4,21 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   runtimeConfig: {
-    dbDriver: '',
-    dbHost: '',
-    dbPort: '',
-    dbUser: '',
-    dbPassword: '',
-    dbDatabase: '',
-    databaseUrl: '',
+    dbDriver: "",
+    dbHost: "",
+    dbPort: "",
+    dbUser: "",
+    dbPassword: "",
+    dbDatabase: "",
+    databaseUrl: "",
   },
   devtools: { enabled: true },
+  modules: ["@scalar/nuxt"],
+  nitro: {
+    experimental: {
+      openAPI: true,
+    },
+  },
   css: ["./app/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
