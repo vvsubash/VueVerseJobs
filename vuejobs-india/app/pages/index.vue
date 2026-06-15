@@ -54,11 +54,23 @@
         </nav>
 
         <div>
+          <div v-if="session.isPending" class="text-sm text-slate-500">Loading...</div>
+          <div v-else-if="session.data" class="flex items-center gap-4">
+            <span class="text-sm font-medium text-slate-700">Hello, {{ session.data.user.name }}</span>
             <button
-            class="rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 font-semibold text-white transition hover:scale-105"
+              @click="handleSignOut"
+              class="rounded-xl border border-red-200 px-4 py-2 font-semibold text-red-600 transition hover:bg-red-50 cursor-pointer"
+            >
+              Sign out
+            </button>
+          </div>
+          <NuxtLink
+            v-else
+            to="/sign-in"
+            class="rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 font-semibold text-white transition hover:scale-105 inline-block cursor-pointer"
           >
             Sign in
-          </button>
+          </NuxtLink>
         </div>
       </div>
     </header>
@@ -195,6 +207,15 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
+import { authClient } from "~/utils/auth-client";
+
+const session = authClient.useSession();
+
+const handleSignOut = async () => {
+  await authClient.signOut({
+    callbackURL: "/"
+  });
+};
 
 useSeoMeta({
   title: 'Vue Jobs India | Find Vue.js & Nuxt Jobs in India - VueVerse',
