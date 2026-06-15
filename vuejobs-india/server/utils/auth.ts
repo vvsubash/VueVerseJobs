@@ -2,12 +2,20 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { db } from "../database/db";
 import { sendEmail } from "./email";
-import { magicLink } from "better-auth/plugins";
+import { magicLink, organization } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "developer",
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -61,6 +69,14 @@ export const auth = betterAuth({
           `
         });
       }
-    })
+    }),
+    organization({
+      additionalFields: {
+        verified: {
+          type: "boolean",
+          defaultValue: false,
+        },
+      },
+    }),
   ]
 });
