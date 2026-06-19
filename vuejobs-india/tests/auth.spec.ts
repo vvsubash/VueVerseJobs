@@ -79,18 +79,16 @@ describe("Auth Sign-Up Flow via Browser", () => {
       // Navigate to the verification URL to verify the account
       await page.goto(verificationUrl);
 
-      // Navigate back to sign-in page to log in with verified account
-      await page.goto("http://localhost:3000/sign-in");
+      // Assert redirected to "Email Verified!" page and greets user
+      await page.waitForSelector("text=Email Verified!", { timeout: 10000 });
+      const welcomeElement = await page.waitForSelector("text=Welcome, Playwright User", { timeout: 10000 });
+      expect(welcomeElement).not.toBeNull();
 
-      // Fill in verified credentials
-      await page.fill("#email-address", "playwrightuser@example.com");
-      await page.fill("#password", "@BrowserPass99");
+      // Click CTA to go to homepage
+      await page.click("text=Go to Homepage / Dashboard");
 
-      // Submit the form
-      await page.click("button[type='submit']");
-
-      // Wait for the asynchronous session fetch to complete and greet the user
-      const greetingElement = await page.waitForSelector("text=Hello, Playwright User", { timeout: 10000 });
+      // Wait for the homepage greeting
+      const greetingElement = await page.waitForSelector("text=Welcome back, Playwright User!", { timeout: 10000 });
       expect(greetingElement).not.toBeNull();
 
       // Sign out to clean up session before the next test
@@ -214,11 +212,12 @@ describe("Auth Sign-Up Flow via Browser", () => {
       // Navigate to verification URL
       await page.goto(verificationUrl);
 
-      // 2. Sign in as recruiter
-      await page.goto("http://localhost:3000/sign-in");
-      await page.fill("#email-address", "recruiter@vueverse.corp");
-      await page.fill("#password", "@RecruiterPass99");
-      await page.click("button[type='submit']");
+      // Assert redirected to "Email Verified!" page and greets recruiter
+      await page.waitForSelector("text=Email Verified!", { timeout: 10000 });
+      await page.waitForSelector("text=Welcome, Recruiter User", { timeout: 10000 });
+
+      // Click CTA to go to homepage/dashboard
+      await page.click("text=Go to Homepage / Dashboard");
 
       // Assert redirected to "Create Company Profile"
       await page.waitForSelector("text=Create Company Profile", { timeout: 10000 });

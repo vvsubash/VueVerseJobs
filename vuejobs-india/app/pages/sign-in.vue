@@ -170,14 +170,14 @@ const handleSubmit = async () => {
         password: form.password,
         name: form.name,
         role: signUpRole.value,
-        callbackURL: "/"
+        callbackURL: "/verify-email?verified=true"
       }, {
         onRequest: () => {
           loading.value = true;
         },
         onSuccess: () => {
           loading.value = false;
-          navigateTo("/");
+          navigateTo(`/verify-email?pending=true&email=${encodeURIComponent(form.email)}`);
         },
         onError: (ctx) => {
           loading.value = false;
