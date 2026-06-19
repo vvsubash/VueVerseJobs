@@ -48,7 +48,7 @@
         </div>
 
         <nav class="hidden gap-8 text-sm font-medium md:flex">
-          <a class="hover:text-green-600" href="#">Jobs</a>
+          <NuxtLink class="hover:text-green-600" to="/jobs">Jobs</NuxtLink>
           <a class="hover:text-green-600" href="#">Companies</a>
           <a class="hover:text-green-600" href="#">Remote Jobs</a>
         </nav>
@@ -244,11 +244,61 @@
           <p class="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
             Welcome back, {{ session.data.user.name }}! Explore remote, hybrid and onsite opportunities from verified companies.
           </p>
-          <!-- Search box -->
-          <div class="mx-auto mt-12 flex max-w-3xl rounded-2xl border border-green-100 bg-white p-3 shadow-2xl">
-            <input type="text" placeholder="Search Vue.js, Nuxt, TypeScript jobs..." class="flex-1 bg-transparent px-4 outline-none" />
-            <button class="rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 font-semibold text-white transition hover:scale-105 cursor-pointer">
-              Search Jobs
+          <!-- Search and Filter Bar -->
+          <div class="mx-auto mt-12 max-w-4xl bg-white rounded-3xl border border-green-100 p-4 shadow-2xl space-y-4 md:space-y-0 md:flex md:items-center md:gap-3 text-left">
+            <!-- Text Search -->
+            <div class="flex-1 min-w-0 relative flex items-center">
+              <Icon icon="heroicons:magnifying-glass" class="absolute left-4 h-5 w-5 text-slate-400" />
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search Vue.js, Nuxt, TypeScript jobs..."
+                class="block w-full bg-transparent pl-12 pr-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none sm:text-sm"
+                @keyup.enter="handleSearch"
+              />
+            </div>
+
+            <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+
+            <!-- State Filter -->
+            <div class="w-full md:w-52 relative flex items-center">
+              <Icon icon="heroicons:map-pin" class="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
+              <select
+                v-model="selectedState"
+                class="block w-full bg-transparent pl-11 pr-8 py-3.5 text-slate-700 focus:outline-none sm:text-sm appearance-none cursor-pointer"
+              >
+                <option value="all">All States</option>
+                <option v-for="state in availableStates" :key="state" :value="state">
+                  {{ state }}
+                </option>
+              </select>
+              <Icon icon="heroicons:chevron-down" class="absolute right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+            </div>
+
+            <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+
+            <!-- City Filter -->
+            <div class="w-full md:w-52 relative flex items-center">
+              <Icon icon="heroicons:building-office" class="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
+              <select
+                v-model="selectedCity"
+                class="block w-full bg-transparent pl-11 pr-8 py-3.5 text-slate-700 focus:outline-none sm:text-sm appearance-none cursor-pointer"
+              >
+                <option value="all">All Cities</option>
+                <option v-for="city in availableCities" :key="city" :value="city">
+                  {{ city }}
+                </option>
+              </select>
+              <Icon icon="heroicons:chevron-down" class="absolute right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+            </div>
+
+            <!-- Search Button -->
+            <button
+              @click="handleSearch"
+              class="w-full md:w-auto shrink-0 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 px-7 py-3.5 font-bold text-white transition hover:scale-[1.03] shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>Search Jobs</span>
+              <Icon icon="heroicons:arrow-right" class="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -274,11 +324,61 @@
         <p class="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
           India's dedicated platform for Vue.js and Nuxt developers. Discover remote, hybrid and onsite opportunities from top companies and grow your career with the VueVerse community.
         </p>
-        <!-- Search -->
-        <div class="mx-auto mt-12 flex max-w-3xl rounded-2xl border border-green-100 bg-white p-3 shadow-2xl">
-          <input type="text" placeholder="Search Vue.js, Nuxt, TypeScript jobs..." class="flex-1 bg-transparent px-4 outline-none" />
-          <button class="rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 font-semibold text-white transition hover:scale-105 cursor-pointer">
-            Search Jobs
+        <!-- Search and Filter Bar -->
+        <div class="mx-auto mt-12 max-w-4xl bg-white rounded-3xl border border-green-100 p-4 shadow-2xl space-y-4 md:space-y-0 md:flex md:items-center md:gap-3 text-left">
+          <!-- Text Search -->
+          <div class="flex-1 min-w-0 relative flex items-center">
+            <Icon icon="heroicons:magnifying-glass" class="absolute left-4 h-5 w-5 text-slate-400" />
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search Vue.js, Nuxt, TypeScript jobs..."
+              class="block w-full bg-transparent pl-12 pr-4 py-3.5 text-slate-900 placeholder-slate-400 focus:outline-none sm:text-sm"
+              @keyup.enter="handleSearch"
+            />
+          </div>
+
+          <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+
+          <!-- State Filter -->
+          <div class="w-full md:w-52 relative flex items-center">
+            <Icon icon="heroicons:map-pin" class="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
+            <select
+              v-model="selectedState"
+              class="block w-full bg-transparent pl-11 pr-8 py-3.5 text-slate-700 focus:outline-none sm:text-sm appearance-none cursor-pointer"
+            >
+              <option value="all">All States</option>
+              <option v-for="state in availableStates" :key="state" :value="state">
+                {{ state }}
+              </option>
+            </select>
+            <Icon icon="heroicons:chevron-down" class="absolute right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+          </div>
+
+          <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+
+          <!-- City Filter -->
+          <div class="w-full md:w-52 relative flex items-center">
+            <Icon icon="heroicons:building-office" class="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
+            <select
+              v-model="selectedCity"
+              class="block w-full bg-transparent pl-11 pr-8 py-3.5 text-slate-700 focus:outline-none sm:text-sm appearance-none cursor-pointer"
+            >
+              <option value="all">All Cities</option>
+              <option v-for="city in availableCities" :key="city" :value="city">
+                {{ city }}
+              </option>
+            </select>
+            <Icon icon="heroicons:chevron-down" class="absolute right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+          </div>
+
+          <!-- Search Button -->
+          <button
+            @click="handleSearch"
+            class="w-full md:w-auto shrink-0 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 px-7 py-3.5 font-bold text-white transition hover:scale-[1.03] shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>Search Jobs</span>
+            <Icon icon="heroicons:arrow-right" class="h-4 w-4" />
           </button>
         </div>
         <!-- Stats -->
@@ -319,11 +419,83 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { authClient } from "~/utils/auth-client";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
+import { useRouter } from "#imports";
+import { parseLocation } from "~/utils/location";
 
 const session = authClient.useSession();
 const activeOrg = authClient.useActiveOrganization();
 const listOrgs = authClient.useListOrganizations();
+const router = useRouter();
+
+// Fetch jobs from server API to populate filters
+const { data: rawJobs } = await useFetch<any[]>("/api/jobs", {
+  default: () => []
+});
+
+// Parsed jobs with computed state and city values
+const parsedJobs = computed(() => {
+  if (!rawJobs.value) return [];
+  return rawJobs.value.map(job => {
+    const { city, state } = parseLocation(job.location || "");
+    return {
+      ...job,
+      parsedCity: city,
+      parsedState: state
+    };
+  });
+});
+
+const searchQuery = ref("");
+const selectedState = ref("all");
+const selectedCity = ref("all");
+
+// Watch state changes to reset city if it's not in the new state's cities
+watch(selectedState, (newState) => {
+  if (newState !== "all" && selectedCity.value !== "all") {
+    const citiesInNewState = parsedJobs.value
+      .filter(j => j.parsedState === newState && j.parsedCity)
+      .map(j => j.parsedCity);
+    if (!citiesInNewState.includes(selectedCity.value)) {
+      selectedCity.value = "all";
+    }
+  }
+});
+
+// Extract available unique states dynamically
+const availableStates = computed(() => {
+  const states = new Set<string>();
+  parsedJobs.value.forEach(j => {
+    if (j.parsedState) states.add(j.parsedState);
+  });
+  return Array.from(states).sort();
+});
+
+// Extract available unique cities dynamically
+const availableCities = computed(() => {
+  const cities = new Set<string>();
+  parsedJobs.value.forEach(j => {
+    if (selectedState.value !== "all" && j.parsedState !== selectedState.value) {
+      return;
+    }
+    if (j.parsedCity) cities.add(j.parsedCity);
+  });
+  return Array.from(cities).sort();
+});
+
+const handleSearch = () => {
+  const query: Record<string, string> = {};
+  if (searchQuery.value.trim()) {
+    query.search = searchQuery.value.trim();
+  }
+  if (selectedState.value !== "all") {
+    query.state = selectedState.value;
+  }
+  if (selectedCity.value !== "all") {
+    query.city = selectedCity.value;
+  }
+  router.push({ path: "/jobs", query });
+};
 
 // Automatically set the active organization if none is active but the user has organizations
 watch(
