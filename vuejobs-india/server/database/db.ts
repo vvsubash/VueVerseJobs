@@ -1,13 +1,13 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
-
-let connectionString = "";
+// This connection string is also being used out of nuxt so adding env variable as backup
+let connectionString = process.env.NUXT_DATABASE_URL || "";
 
 try {
   const config = useRuntimeConfig();
   if (config?.databaseUrl) {
-     connectionString = config.databaseUrl;
+    connectionString = config.databaseUrl;
   }
 } catch (e) {
   // useRuntimeConfig is not defined outside the Nuxt context
