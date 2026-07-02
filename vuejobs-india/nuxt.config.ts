@@ -5,6 +5,17 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   runtimeConfig: {
     databaseUrl: "",
+    betterAuth: {
+      secret: "",
+      url: "",
+    },
+    smtp: {
+      host: "localhost",
+      port: "1025",
+      user: "",
+      pass: "",
+      from: '"VueJobs India" <noreply@vuejobs.in>',
+    },
   },
   routeRules: {
     "/docs/**":{
@@ -12,15 +23,10 @@ export default defineNuxtConfig({
       
     }
   },
-  modules: ["@scalar/nuxt"],
+  modules: ["@scalar/nuxt", "./modules/openapi"],
   scalar: {
     spec: {
-      url: "/_openapi.json",
-    },
-  },
-  nitro: {
-    experimental: {
-      openAPI: true,
+      url: "/openapi.json",
     },
   },
   devtools: { enabled: true },
